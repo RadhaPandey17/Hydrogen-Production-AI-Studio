@@ -30,7 +30,7 @@ MODEL_PATH = PROJECT_ROOT / "best_final_ensemble_model.pkl"
 
 SCALER_PATH = PROJECT_ROOT / "scaler.pkl"
 
-FEATURES_PATH = PROJECT_ROOT / "feature_names.pkl"
+FEATURE_PATH = PROJECT_ROOT / "feature_names.pkl"
 
 PROMPT_PATH = PROJECT_ROOT / "report_prompt.txt"
 
