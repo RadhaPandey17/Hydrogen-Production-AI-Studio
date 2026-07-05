@@ -32,7 +32,7 @@ class ReportAgent:
                 if not PROMPT_PATH.exists():
                     raise FileNotFoundError(f"Prompt file not found: {PROMPT_PATH}")
                     with open(PROMPT_PATH, "r", encoding="utf-8") as f:
-                        self.prompt_template = f.read()
+                        self.system_prompt = f.read()
 
     # ----------------------------------------------------
 
