@@ -373,7 +373,10 @@ elif page == "Prediction":
 
             try:
 
+                # -----------------------------
                 # Prediction
+                # -----------------------------
+
                 prediction_result = prediction_agent.predict(
                     latitude=latitude,
                     longitude=longitude
@@ -381,15 +384,23 @@ elif page == "Prediction":
 
                 st.session_state.prediction = prediction_result
 
+                # -----------------------------
                 # SHAP
+                # -----------------------------
+
                 xai_result = xai_agent.explain(
                     prediction_result["Scaled_Data"],
                     prediction_agent.required_features
                 )
 
-                st.session_state.feature_importance = xai_result["feature_importance"]
+                st.session_state.feature_importance = (
+                    xai_result["feature_importance"]
+                )
 
+                # -----------------------------
                 # AI REPORT
+                # -----------------------------
+
                 report = report_agent.generate_report(
                     prediction_result,
                     st.session_state.feature_importance
@@ -403,7 +414,7 @@ elif page == "Prediction":
 
                 import traceback
 
-                st.error("Prediction / AI Report Failed")
+                st.error("Prediction Pipeline Failed")
 
                 st.exception(e)
 
@@ -436,6 +447,7 @@ elif page == "Prediction":
             )
 
         with c3:
+
             score = round(
                 100 - min(result["CO2_Emission"] * 5, 100),
                 1
@@ -443,7 +455,7 @@ elif page == "Prediction":
 
             st.metric(
                 "Sustainability Score",
-                f"{score} %"
+                f"{score}%"
             )
 
         st.markdown("---")
@@ -451,16 +463,16 @@ elif page == "Prediction":
         st.subheader("Matched Dataset Location")
 
         info_df = result["Feature_Row"].to_frame()
+
         info_df.columns = ["Value"]
 
         st.dataframe(
             info_df,
             use_container_width=True
         )
-
-        # ======================================================
-        # SHAP FEATURE IMPORTANCE
-        # ======================================================
+        # ==========================================================
+# SHAP FEATURE IMPORTANCE
+# ==========================================================
 
         if st.session_state.feature_importance is not None:
 
@@ -495,6 +507,37 @@ elif page == "Prediction":
                 fig,
                 use_container_width=True
             )
+
+        # ======================================================
+        # AI REPORT PREVIEW
+        # ======================================================
+
+        if st.session_state.report is not None:
+
+            st.markdown("---")
+
+            st.subheader("🤖 AI Sustainability Report")
+
+            st.markdown(st.session_state.report)
+
+            try:
+
+                pdf_buffer = pdf_generator.generate(
+                    st.session_state.prediction,
+                    st.session_state.report
+                )
+
+                st.download_button(
+                    label="📄 Download PDF Report",
+                    data=pdf_buffer,
+                    file_name="Hydrogen_AI_Report.pdf",
+                    mime="application/pdf",
+                    use_container_width=True
+                )
+
+            except Exception as e:
+
+                st.warning(f"PDF generation failed: {e}")
 # ==========================================================
 # AI REPORT PAGE
 # ==========================================================
