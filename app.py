@@ -422,28 +422,24 @@ elif page == "Prediction":
                     xai_result["feature_importance"]
 
                 )
-
-                # ------------------------------------------
-                # AI REPORT
-                # ------------------------------------------
-
-try:
-    report = report_agent.generate_report(
-        prediction_result,
-        st.session_state.feature_importance
-    )
-
-    st.session_state.report = report
-
-    st.success("Prediction Completed Successfully!")
-    st.success("AI Report Generated Successfully!")
-
-except Exception as e:
-    import traceback
-
-    st.error("AI Report Generation Failed")
-    st.exception(e)
-    st.code(traceback.format_exc())
+# ------------------------------------------
+# AI REPORT
+# ------------------------------------------                
+                
+                
+                try:
+                    report = report_agent.generate_report(
+                        prediction_result,
+                        t.session_state.feature_importance
+                    )
+                    st.session_state.report = report
+                    st.success("Prediction Completed Successfully!")
+                    st.success("AI Report Generated Successfully!")
+                except Exception as e:
+                    import traceback
+                    st.error("AI Report Generation Failed")
+                    st.exception(e)
+                    st.code(traceback.format_exc())
 
     # ======================================================
     # SHOW RESULTS
