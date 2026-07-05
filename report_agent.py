@@ -1,17 +1,6 @@
 """
-==========================================================
-Hydrogen Production AI Studio (2026)
-
+Hydrogen Production AI Studio
 Gemini Report Agent
-
-Uses
-• Gemini API
-• SHAP Result
-• Prediction
-
-Generates AI Sustainability Report
-
-==========================================================
 """
 
 from config import GEMINI_MODEL, PROMPT_PATH
@@ -20,75 +9,58 @@ from config import GEMINI_MODEL, PROMPT_PATH
 class ReportAgent:
 
     def __init__(self):
+
         self.model = GEMINI_MODEL
 
-        print("PROMPT PATH:", PROMPT_PATH)
+        if PROMPT_PATH.exists():
+            with open(PROMPT_PATH, "r", encoding="utf-8") as f:
+                self.system_prompt = f.read()
+        else:
+            self.system_prompt = """
+You are an AI sustainability expert.
 
-        if not PROMPT_PATH.exists():
-            raise FileNotFoundError(
-                f"Prompt file not found: {PROMPT_PATH}"
-            )
+Generate a professional report containing:
 
-        with open(PROMPT_PATH, "r", encoding="utf-8") as f:
-            self.system_prompt = f.read()
+1. Predicted Hydrogen Production
+2. Estimated CO₂ Emission
+3. SHAP Interpretation
+4. Sustainability Insights
+5. Recommendations
 
-    # --------------------------------------------------------
+Keep the report concise and professional.
+"""
 
-    def generate_report(
-        self,
-        prediction_result,
-        feature_importance
-    ):
+    # -------------------------------------------------
+
+    def generate_report(self, prediction_result, feature_importance):
 
         top_features = feature_importance.head(5)
 
         shap_text = ""
 
         for _, row in top_features.iterrows():
-            shap_text += (
-                f"{row['Feature']} : "
-                f"{round(row['Importance'],4)}\n"
-            )
+            shap_text += f"{row['Feature']} : {round(row['Importance'],4)}\n"
 
         prompt = f"""
 {self.system_prompt}
 
-==================================================
-
-Prediction Summary
+Prediction
 
 Hydrogen Production:
-{prediction_result["Hydrogen_Output"]} kg/day
+{prediction_result['Hydrogen_Output']} kg/day
 
-Estimated CO₂ Emission:
-{prediction_result["CO2_Emission"]} kg CO₂-eq/kg H₂
+Estimated CO₂:
+{prediction_result['CO2_Emission']} kg CO₂-eq/kg H₂
 
 Latitude:
-{prediction_result["Latitude"]}
+{prediction_result['Latitude']}
 
 Longitude:
-{prediction_result["Longitude"]}
+{prediction_result['Longitude']}
 
-==================================================
-
-Top SHAP Features
+Top SHAP Features:
 
 {shap_text}
-
-==================================================
-
-Generate a professional sustainability report.
-
-The report should include:
-
-1. Prediction Summary
-2. Environmental Interpretation
-3. SHAP Feature Analysis
-4. Sustainability Insights
-5. Recommendations
-6. Conclusion
-
-Keep the language professional, concise, and suitable for research purposes.
 """
 
         response = self.model.generate_content(prompt)
