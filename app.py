@@ -427,21 +427,23 @@ elif page == "Prediction":
                 # AI REPORT
                 # ------------------------------------------
 
-                report = report_agent.generate_report(
+try:
+    report = report_agent.generate_report(
+        prediction_result,
+        st.session_state.feature_importance
+    )
 
-                    prediction_result,
+    st.session_state.report = report
 
-                    st.session_state.feature_importance
+    st.success("Prediction Completed Successfully!")
+    st.success("AI Report Generated Successfully!")
 
-                )
+except Exception as e:
+    import traceback
 
-                st.session_state.report = report
-
-                st.success("Prediction Completed Successfully!")
-
-            except Exception as e:
-
-                st.error(f"Prediction Failed : {e}")
+    st.error("AI Report Generation Failed")
+    st.exception(e)
+    st.code(traceback.format_exc())
 
     # ======================================================
     # SHOW RESULTS
