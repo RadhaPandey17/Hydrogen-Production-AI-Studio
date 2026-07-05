@@ -22,7 +22,7 @@ import shap
 import numpy as np
 import pandas as pd
 
-from utils.config import MODEL_PATH
+from config import *
 
 
 class XAIAgent:
