@@ -59,13 +59,31 @@ section[data-testid="stSidebar"] *{
 
 .metric-card{
 
-    background:white;
+background:#1E293B;
 
-    border-radius:18px;
+color:white;
 
-    padding:25px;
+padding:25px;
 
-    box-shadow:0 8px 18px rgba(0,0,0,.08);
+border-radius:18px;
+
+box-shadow:0 10px 20px rgba(0,0,0,.3);
+
+} .metric-card h2{
+
+color:white;
+
+}
+
+.metric-card h3{
+
+color:#60A5FA;
+
+}
+
+.metric-card p{
+
+color:#CBD5E1;
 
 }
 
