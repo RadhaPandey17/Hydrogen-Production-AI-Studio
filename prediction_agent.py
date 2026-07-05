@@ -43,12 +43,7 @@ import pandas as pd
 from pathlib import Path
 from config import DATASET_PATH
 
-from config import *(
-    DATASET_PATH,
-    MODEL_PATH,
-    SCALER_PATH,
-    FEATURE_PATH
-)
+from config import * 
 
 
 class PredictionAgent:
