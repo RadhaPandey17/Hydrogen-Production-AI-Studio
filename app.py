@@ -329,7 +329,7 @@ elif page == "Prediction":
 
     st.write(
         "Enter Latitude and Longitude. "
-        "The remaining parameters will be retrieved automatically "
+        "The remaining parameters will be retrieved automatically."
     )
 
     st.markdown("---")
@@ -341,49 +341,31 @@ elif page == "Prediction":
         col1, col2 = st.columns(2)
 
         with col1:
-
             latitude = st.number_input(
-
                 "Latitude",
-
                 min_value=-90.0,
-
                 max_value=90.0,
-
                 value=23.500,
-
                 format="%.6f"
-
             )
 
         with col2:
-
             longitude = st.number_input(
-
                 "Longitude",
-
                 min_value=-180.0,
-
                 max_value=180.0,
-
                 value=78.900,
-
                 format="%.6f"
-
             )
 
-        st.markdown("")
-
         predict_btn = st.button(
-
             "🚀 Predict Hydrogen Production",
-
             use_container_width=True
-
         )
-        # ==========================================================
-# PREDICTION PIPELINE
-# ==========================================================
+
+    # ======================================================
+    # PREDICTION PIPELINE
+    # ======================================================
 
     if predict_btn:
 
@@ -391,66 +373,42 @@ elif page == "Prediction":
 
             try:
 
-                # ------------------------------------------
-                # Model Prediction
-                # ------------------------------------------
-
+                # Prediction
                 prediction_result = prediction_agent.predict(
-
                     latitude=latitude,
-
                     longitude=longitude
-
                 )
 
                 st.session_state.prediction = prediction_result
 
-                # ------------------------------------------
                 # SHAP
-                # ------------------------------------------
-
                 xai_result = xai_agent.explain(
-
                     prediction_result["Scaled_Data"],
-
                     prediction_agent.required_features
-
                 )
 
-                st.session_state.feature_importance = (
+                st.session_state.feature_importance = xai_result["feature_importance"]
 
-                    xai_result["feature_importance"]
-
+                # AI REPORT
+                report = report_agent.generate_report(
+                    prediction_result,
+                    st.session_state.feature_importance
                 )
-  # ------------------------------------------
-# AI REPORT
-# ------------------------------------------                
-                if predict_btn:
-                    with st.spinner("Running AI Prediction..."):
-                        try:
-                            prediction_result = prediction_agent.predict(
-                                latitude=latitude,
-                                longitude=longitude
-                            )
-                            st.session_state.prediction = prediction_result
-                            xai_result = xai_agent.explain(
-                                prediction_result["Scaled_Data"],
-                                prediction_agent.required_features
-                            )
-                            st.session_state.feature_importance = (
-                                xai_result["feature_importance"]
-                            )
-                            report = report_agent.generate_report(
-                                prediction_result,
-                                st.session_state.feature_importance
-                            )
-                            st.session_state.report = report
-                            st.success("Prediction Completed Successfully!")
-                        except Exception as e:
-                            import traceback
-                            st.exception(e)
-                            st.code(traceback.format_exc())
-              
+
+                st.session_state.report = report
+
+                st.success("Prediction Completed Successfully!")
+
+            except Exception as e:
+
+                import traceback
+
+                st.error("Prediction / AI Report Failed")
+
+                st.exception(e)
+
+                st.code(traceback.format_exc())
+
     # ======================================================
     # SHOW RESULTS
     # ======================================================
@@ -466,65 +424,43 @@ elif page == "Prediction":
         c1, c2, c3 = st.columns(3)
 
         with c1:
-
             st.metric(
-
                 "Hydrogen Production",
-
                 f"{result['Hydrogen_Output']} kg/day"
-
             )
 
         with c2:
-
             st.metric(
-
                 "Estimated CO₂",
-
                 f"{result['CO2_Emission']} kg CO₂-eq"
-
             )
 
         with c3:
-
             score = round(
-
-                100 -
-
-                min(result["CO2_Emission"] * 5, 100),
-
+                100 - min(result["CO2_Emission"] * 5, 100),
                 1
-
             )
 
             st.metric(
-
                 "Sustainability Score",
-
                 f"{score} %"
-
             )
 
         st.markdown("---")
 
         st.subheader("Matched Dataset Location")
 
-        info = result["Feature_Row"]
-
-        info_df = info.to_frame()
-
+        info_df = result["Feature_Row"].to_frame()
         info_df.columns = ["Value"]
 
         st.dataframe(
-
             info_df,
-
             use_container_width=True
-
         )
-        # ==========================================================
-# SHAP FEATURE IMPORTANCE
-# ==========================================================
+
+        # ======================================================
+        # SHAP FEATURE IMPORTANCE
+        # ======================================================
 
         if st.session_state.feature_importance is not None:
 
@@ -539,43 +475,26 @@ elif page == "Prediction":
             )
 
             fig = px.bar(
-
                 importance,
-
                 x="Importance",
-
                 y="Feature",
-
                 orientation="h",
-
                 text="Importance",
-
                 title="SHAP Feature Importance"
-
             )
 
             fig.update_layout(
-
                 height=500,
-
                 template="plotly_white",
-
                 title_x=0.5,
-
                 xaxis_title="SHAP Importance",
-
                 yaxis_title="Feature"
-
             )
 
             st.plotly_chart(
-
                 fig,
-
                 use_container_width=True
-
             )
-
 # ==========================================================
 # AI REPORT PAGE
 # ==========================================================
