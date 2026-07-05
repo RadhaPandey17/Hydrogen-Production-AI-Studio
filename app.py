@@ -427,19 +427,43 @@ elif page == "Prediction":
 # ------------------------------------------                
                 
                 
-                try:
-                    report = report_agent.generate_report(
-                        prediction_result,
-                        t.session_state.feature_importance
-                    )
-                    st.session_state.report = report
-                    st.success("Prediction Completed Successfully!")
-                    st.success("AI Report Generated Successfully!")
-                except Exception as e:
-                    import traceback
-                    st.error("AI Report Generation Failed")
-                    st.exception(e)
-                    st.code(traceback.format_exc())
+                if predict_btn:
+
+    with st.spinner("Running AI Prediction..."):
+
+        try:
+
+            prediction_result = prediction_agent.predict(
+                latitude=latitude,
+                longitude=longitude
+            )
+
+            st.session_state.prediction = prediction_result
+
+            xai_result = xai_agent.explain(
+                prediction_result["Scaled_Data"],
+                prediction_agent.required_features
+            )
+
+            st.session_state.feature_importance = (
+                xai_result["feature_importance"]
+            )
+
+            report = report_agent.generate_report(
+                prediction_result,
+                st.session_state.feature_importance
+            )
+
+            st.session_state.report = report
+
+            st.success("Prediction Completed Successfully!")
+
+        except Exception as e:
+
+            import traceback
+
+            st.exception(e)
+            st.code(traceback.format_exc())
 
     # ======================================================
     # SHOW RESULTS
