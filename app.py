@@ -9,9 +9,9 @@ import plotly.graph_objects as go
 
 from pathlib import Path
 
-from agents.prediction_agent import PredictionAgent
-from agents.xai_agent import XAIAgent
-from agents.report_agent import ReportAgent
+from prediction_agent import PredictionAgent
+from xai_agent import XAIAgent
+from report_agent import ReportAgent
 
 from utils.pdf_generator import PDFGenerator
 from utils.config import APP_NAME, APP_VERSION
