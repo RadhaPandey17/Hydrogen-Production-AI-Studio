@@ -13,8 +13,8 @@ from prediction_agent import PredictionAgent
 from xai_agent import XAIAgent
 from report_agent import ReportAgent
 
-from utils.pdf_generator import PDFGenerator
-from utils.config import APP_NAME, APP_VERSION
+from pdf_generator import PDFGenerator
+from config import APP_NAME, APP_VERSION
 
 # ==========================================================
 # PAGE CONFIG
