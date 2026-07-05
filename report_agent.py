@@ -17,7 +17,7 @@ Generates AI Sustainability Report
 
 from pathlib import Path
 
-from utils.config import GEMINI_MODEL
+from config import GEMINI_MODEL
 
 
 class ReportAgent:
