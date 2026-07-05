@@ -25,19 +25,19 @@ GEMINI_MODEL = genai.GenerativeModel("gemini-2.5-flash")
 # PATHS
 # ===================================================
 
-DATASET_PATH = PROJECT_ROOT / "data" / "Hydrogen_LCA_Final_Preprocessed.csv"
+from pathlib import Path
 
-MODEL_PATH = PROJECT_ROOT / "models" / "best_final_ensemble_model.pkl"
+PROJECT_ROOT = Path(__file__).parent
 
-SCALER_PATH = PROJECT_ROOT / "models" / "scaler.pkl"
+DATASET_PATH = PROJECT_ROOT / "Hydrogen_LCA_Final_Preprocessed.csv"
 
-FEATURE_PATH = PROJECT_ROOT / "models" / "feature_names.pkl"
+MODEL_PATH = PROJECT_ROOT / "best_final_ensemble_model.pkl"
 
-PROMPT_PATH = PROJECT_ROOT / "prompts" / "report_prompt.txt"
+SCALER_PATH = PROJECT_ROOT / "scaler.pkl"
 
-OUTPUT_FOLDER = PROJECT_ROOT / "outputs"
+FEATURES_PATH = PROJECT_ROOT / "feature_names.pkl"
 
-REPORT_FOLDER = OUTPUT_FOLDER / "reports"
+PROMPT_PATH = PROJECT_ROOT / "report_prompt.txt"
 
 REPORT_FOLDER.mkdir(parents=True, exist_ok=True)
 
