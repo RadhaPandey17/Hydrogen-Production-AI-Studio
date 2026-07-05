@@ -41,8 +41,9 @@ import numpy as np
 import pandas as pd
 
 from pathlib import Path
+from config import DATASET_PATH
 
-from utils.config import (
+from config import *(
     DATASET_PATH,
     MODEL_PATH,
     SCALER_PATH,
