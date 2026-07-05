@@ -23,18 +23,16 @@ from config import GEMINI_MODEL
 class ReportAgent:
 
     def __init__(self):
-
-        prompt_file = (
-            Path(__file__)
-            .resolve()
-            .parent.parent
-            / "prompts"
-            / "report_prompt.txt"
-        )
-
-        with open(prompt_file, "r", encoding="utf-8") as f:
-
-            self.system_prompt = f.read()
+        from pathlib import Path
+        from config import PROMPT_PATH, GEMINI_MODEL
+        class ReportAgent:
+            def __init__(self):
+                self.model = GEMINI_MODEL
+                print("PROMPT PATH =", PROMPT_PATH)
+                if not PROMPT_PATH.exists():
+                    raise FileNotFoundError(f"Prompt file not found: {PROMPT_PATH}")
+                    with open(PROMPT_PATH, "r", encoding="utf-8") as f:
+                        self.prompt_template = f.read()
 
     # ----------------------------------------------------
 
