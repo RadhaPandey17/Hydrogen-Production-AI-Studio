@@ -328,9 +328,8 @@ elif page == "Prediction":
     st.title("⚡ Hydrogen Prediction")
 
     st.write(
-        "Enter only Latitude and Longitude. "
-        "The remaining parameters will be automatically "
-        "retrieved from the internal hydrogen dataset."
+        "Enter Latitude and Longitude. "
+        "The remaining parameters will be retrieved automatically "
     )
 
     st.markdown("---")
