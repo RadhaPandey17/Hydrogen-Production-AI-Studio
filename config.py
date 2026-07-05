@@ -45,3 +45,10 @@ OUTPUT_FOLDER.mkdir(exist_ok=True)
 REPORT_FOLDER = OUTPUT_FOLDER / "reports"
 
 REPORT_FOLDER.mkdir(parents=True, exist_ok=True)
+# ==========================
+# APPLICATION INFO
+# ==========================
+
+APP_NAME = "Hydrogen Production AI Studio"
+
+APP_VERSION = "2026.1"
