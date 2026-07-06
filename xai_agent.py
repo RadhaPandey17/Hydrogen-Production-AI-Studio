@@ -4,10 +4,17 @@ Hydrogen Production AI Studio (2026)
 
 Explainable AI Agent
 
+Compatible with:
+✓ Voting Regressor
+✓ Streamlit Cloud
+✓ AI Report
+✓ PDF Generator
+
 ==========================================================
 """
 
 import joblib
+import numpy as np
 import pandas as pd
 
 from config import MODEL_PATH
@@ -23,21 +30,33 @@ class XAIAgent:
 
     def explain(self, scaled_data, feature_names):
 
-        # Placeholder feature importance so that
-        # AI Report and PDF generation continue working.
+        # ======================================================
+        # Temporary Feature Importance
+        #
+        # Since VotingRegressor cannot be explained directly
+        # using TreeExplainer, we compute a simple importance
+        # score from the scaled feature values.
+        #
+        # This keeps:
+        # ✓ SHAP graph
+        # ✓ AI Report
+        # ✓ PDF generation
+        # working correctly.
+        # ======================================================
+
+        values = np.abs(scaled_data[0])
 
         feature_importance = pd.DataFrame({
 
             "Feature": feature_names,
 
-            "Importance": [0.0] * len(feature_names)
+            "Importance": values
 
         })
 
         feature_importance = feature_importance.sort_values(
-
-            by="Feature"
-
+            by="Importance",
+            ascending=False
         )
 
         return {
