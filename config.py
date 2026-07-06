@@ -4,39 +4,59 @@ Configuration File
 """
 
 from pathlib import Path
-from dotenv import load_dotenv
 import os
+
+from dotenv import load_dotenv
+import streamlit as st
 import google.generativeai as genai
 
 # =====================================================
 # PROJECT ROOT
 # =====================================================
 
-PROJECT_ROOT = Path(_file_).resolve().parent
+PROJECT_ROOT = Path(__file__).resolve().parent
 
 # =====================================================
-# LOAD ENVIRONMENT VARIABLES
+# LOAD LOCAL .ENV (FOR VS CODE)
 # =====================================================
 
 load_dotenv(PROJECT_ROOT / ".env")
 
 # =====================================================
-# GOOGLE GEMINI CONFIGURATION
+# GOOGLE API KEY
 # =====================================================
 
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+GOOGLE_API_KEY = None
 
+# First try Streamlit Secrets
+try:
+    GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY"]
+except Exception:
+    pass
+
+# If not found, use local .env
+if GOOGLE_API_KEY is None:
+    GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+
+# Final check
 if not GOOGLE_API_KEY:
     raise ValueError(
-        "GOOGLE_API_KEY not found. "
-        "Please add it to your Render Environment Variables or local .env file."
+        "GOOGLE_API_KEY not found.\n"
+        "Add it to:\n"
+        "1. Streamlit Secrets (Cloud)\n"
+        "OR\n"
+        "2. Local .env file (VS Code)"
     )
 
-# Configure Gemini
+# =====================================================
+# CONFIGURE GEMINI
+# =====================================================
+
 genai.configure(api_key=GOOGLE_API_KEY)
 
-# Gemini Model
-GEMINI_MODEL = genai.GenerativeModel("gemini-2.5-flash")
+GEMINI_MODEL = genai.GenerativeModel(
+    "gemini-2.5-flash"
+)
 
 print("=" * 60)
 print("Hydrogen Production AI Studio")
@@ -59,7 +79,7 @@ FEATURE_PATH = PROJECT_ROOT / "feature_names.pkl"
 PROMPT_PATH = PROJECT_ROOT / "report_prompt.txt"
 
 # =====================================================
-# OUTPUT DIRECTORIES
+# OUTPUT FOLDERS
 # =====================================================
 
 OUTPUT_FOLDER = PROJECT_ROOT / "outputs"
@@ -69,7 +89,7 @@ REPORT_FOLDER = OUTPUT_FOLDER / "reports"
 REPORT_FOLDER.mkdir(parents=True, exist_ok=True)
 
 # =====================================================
-# APPLICATION INFO
+# APP INFO
 # =====================================================
 
 APP_NAME = "Hydrogen Production AI Studio"
@@ -87,7 +107,7 @@ DEFAULT_SHAP_SAMPLE = 150
 RANDOM_STATE = 42
 
 # =====================================================
-# VERIFY REQUIRED FILES
+# VERIFY FILES
 # =====================================================
 
 REQUIRED_FILES = {
@@ -106,6 +126,6 @@ for name, path in REQUIRED_FILES.items():
 if missing:
     print("\nMissing Files:")
     for item in missing:
-        print(f" - {item}")
+        print(" -", item)
 else:
     print("All required files found.")
