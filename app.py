@@ -32,7 +32,7 @@ st.set_page_config(
 # ==========================================================
 
 st.markdown(
-"""
+"""a
 <style>
 
 html, body, [class*="css"]{
@@ -318,51 +318,7 @@ AI Report
 PDF Download
 """
     )
-
-# ==========================================================
-# PREDICTION PAGE
-# ==========================================================
-
-elif page == "Prediction":
-
-    st.title("⚡ Hydrogen Prediction")
-
-    st.write(
-        "Enter Latitude and Longitude. "
-        "The remaining parameters will be retrieved automatically."
-    )
-
-    st.markdown("---")
-
-    with st.container(border=True):
-
-        st.subheader("📍 Location Coordinates")
-
-        col1, col2 = st.columns(2)
-
-        with col1:
-            latitude = st.number_input(
-                "Latitude",
-                min_value=-90.0,
-                max_value=90.0,
-                value=23.500,
-                format="%.6f"
-            )
-
-        with col2:
-            longitude = st.number_input(
-                "Longitude",
-                min_value=-180.0,
-                max_value=180.0,
-                value=78.900,
-                format="%.6f"
-            )
-
-        predict_btn = st.button(
-            "🚀 Predict Hydrogen Production",
-            use_container_width=True
-        )
-
+       
 # ==========================================================
 # PREDICTION PAGE
 # ==========================================================
