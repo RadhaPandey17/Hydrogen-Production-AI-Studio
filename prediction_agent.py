@@ -146,10 +146,8 @@ class PredictionAgent:
         )
 
         scaled = self.prepare_features(nearest)
-
-        prediction_log = self.model.predict(scaled)[0]
-
-        hydrogen = np.expm1(prediction_log)
+        prediction = self.model.predict(scaled)[0]
+        hydrogen = float(prediction)
 
         co2 = nearest["LCA_GWP_kg_CO2_eq_per_kg_H2"]
 
