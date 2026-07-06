@@ -13,9 +13,15 @@ PROJECT_ROOT = Path(__file__).resolve().parent
 # LOAD ENV
 # ==========================
 
+import streamlit as st
+
 load_dotenv(PROJECT_ROOT / ".env")
 
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+GOOGLE_API_KEY = (
+    st.secrets.get("GOOGLE_API_KEY")
+    if "GOOGLE_API_KEY" in st.secrets
+    else os.getenv("GOOGLE_API_KEY")
+)
 print("API KEY =", GOOGLE_API_KEY)
 
 genai.configure(api_key=GOOGLE_API_KEY)
