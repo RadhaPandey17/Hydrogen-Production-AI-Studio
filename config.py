@@ -16,6 +16,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent
 load_dotenv(PROJECT_ROOT / ".env")
 
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+print("API KEY =", GOOGLE_API_KEY)
 
 genai.configure(api_key=GOOGLE_API_KEY)
 
