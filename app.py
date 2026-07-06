@@ -32,7 +32,7 @@ st.set_page_config(
 # ==========================================================
 
 st.markdown(
-"""a
+"""
 <style>
 
 html, body, [class*="css"]{
