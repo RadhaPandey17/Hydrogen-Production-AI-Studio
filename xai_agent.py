@@ -27,20 +27,15 @@ from config import *
 
 class XAIAgent:
     def __init__(self):
-
-    model = joblib.load(MODEL_PATH)
-
-    if hasattr(model, "named_estimators_"):
-
-        if "RandomForest" in model.named_estimators_:
-            self.model = model.named_estimators_["RandomForest"]
-        else:
+        model = joblib.load(MODEL_PATH)
+        if hasattr(model, "named_estimators_"):
+            if "RandomForest" in model.named_estimators_:
+                self.model = model.named_estimators_["RandomForest"]
+            else:
             self.model = list(model.named_estimators_.values())[0]
-
-    else:
-        self.model = model
-
-    self.explainer = shap.TreeExplainer(self.model)
+        else:
+            self.model = model
+            self.explainer = shap.TreeExplainer(self.model)
     # --------------------------------------------------------
 
     def explain(self, scaled_data, feature_names):
