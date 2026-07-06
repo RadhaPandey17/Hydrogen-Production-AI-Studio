@@ -363,9 +363,53 @@ elif page == "Prediction":
             use_container_width=True
         )
 
-    # ======================================================
-    # PREDICTION PIPELINE
-    # ======================================================
+# ==========================================================
+# PREDICTION PAGE
+# ==========================================================
+
+elif page == "Prediction":
+
+    st.title("⚡ Hydrogen Prediction")
+
+    st.write(
+        "Enter Latitude and Longitude. "
+        "The remaining parameters will be retrieved automatically."
+    )
+
+    st.markdown("---")
+
+    with st.container(border=True):
+
+        st.subheader("📍 Location Coordinates")
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            latitude = st.number_input(
+                "Latitude",
+                min_value=-90.0,
+                max_value=90.0,
+                value=23.500,
+                format="%.6f"
+            )
+
+        with col2:
+            longitude = st.number_input(
+                "Longitude",
+                min_value=-180.0,
+                max_value=180.0,
+                value=78.900,
+                format="%.6f"
+            )
+
+        predict_btn = st.button(
+            "🚀 Predict Hydrogen Production",
+            use_container_width=True
+        )
+
+    # ==========================
+    # Prediction Pipeline
+    # ==========================
 
     if predict_btn:
 
@@ -373,20 +417,12 @@ elif page == "Prediction":
 
             try:
 
-                # -----------------------------
-                # Prediction
-                # -----------------------------
-
                 prediction_result = prediction_agent.predict(
                     latitude=latitude,
                     longitude=longitude
                 )
 
                 st.session_state.prediction = prediction_result
-
-                # -----------------------------
-                # SHAP
-                # -----------------------------
 
                 xai_result = xai_agent.explain(
                     prediction_result["Scaled_Data"],
@@ -397,32 +433,19 @@ elif page == "Prediction":
                     xai_result["feature_importance"]
                 )
 
-                # -----------------------------
-                # AI REPORT
-                # -----------------------------
-
-                report = report_agent.generate_report(
-                    prediction_result,
-                    st.session_state.feature_importance
-                )
-
-                st.session_state.report = report
-
                 st.success("Prediction Completed Successfully!")
 
             except Exception as e:
 
                 import traceback
 
-                st.error("Prediction Pipeline Failed")
-
                 st.exception(e)
 
                 st.code(traceback.format_exc())
 
-    # ======================================================
-    # SHOW RESULTS
-    # ======================================================
+    # ==========================
+    # Results
+    # ==========================
 
     if st.session_state.prediction is not None:
 
@@ -460,7 +483,7 @@ elif page == "Prediction":
 
         st.markdown("---")
 
-        st.subheader("Matched Dataset Location")
+        st.subheader("Matched Dataset Row")
 
         info_df = result["Feature_Row"].to_frame()
 
@@ -470,9 +493,10 @@ elif page == "Prediction":
             info_df,
             use_container_width=True
         )
-        # ==========================================================
-# SHAP FEATURE IMPORTANCE
-# ==========================================================
+
+        # ==========================
+        # SHAP
+        # ==========================
 
         if st.session_state.feature_importance is not None:
 
@@ -508,15 +532,47 @@ elif page == "Prediction":
                 use_container_width=True
             )
 
-        # ======================================================
-        # AI REPORT PREVIEW
-        # ======================================================
+        # ==========================
+        # Generate AI Report
+        # ==========================
+
+        st.markdown("---")
+
+        if st.button(
+            "🤖 Generate AI Sustainability Report",
+            use_container_width=True
+        ):
+
+            with st.spinner("Generating AI Report..."):
+
+                try:
+
+                    report = report_agent.generate_report(
+                        st.session_state.prediction,
+                        st.session_state.feature_importance
+                    )
+
+                    st.session_state.report = report
+
+                    st.success("AI Report Generated Successfully!")
+
+                except Exception as e:
+
+                    import traceback
+
+                    st.exception(e)
+
+                    st.code(traceback.format_exc())
+
+        # ==========================
+        # Show AI Report
+        # ==========================
 
         if st.session_state.report is not None:
 
             st.markdown("---")
 
-            st.subheader("🤖 AI Sustainability Report")
+            st.subheader("📄 AI Sustainability Report")
 
             st.markdown(st.session_state.report)
 
@@ -528,7 +584,7 @@ elif page == "Prediction":
                 )
 
                 st.download_button(
-                    label="📄 Download PDF Report",
+                    "📄 Download PDF Report",
                     data=pdf_buffer,
                     file_name="Hydrogen_AI_Report.pdf",
                     mime="application/pdf",
@@ -546,44 +602,13 @@ elif page == "AI Report":
 
     st.title("🤖 AI Sustainability Report")
 
-    if st.session_state.report is None:
+    if st.session_state.report is not None:
 
-        st.warning(
-
-            "Please generate a prediction first."
-
-        )
+        st.markdown(st.session_state.report)
 
     else:
 
-        st.markdown(
-
-            st.session_state.report
-
-        )
-
-        pdf_buffer = pdf_generator.generate(
-
-            st.session_state.prediction,
-
-            st.session_state.report
-
-        )
-
-        st.download_button(
-
-            label="📄 Download PDF Report",
-
-            data=pdf_buffer,
-
-            file_name="Hydrogen_AI_Report.pdf",
-
-            mime="application/pdf",
-
-            use_container_width=True
-
-        )
-
+        st.info("Generate a prediction first.")
 # ==========================================================
 # ABOUT PAGE
 # ==========================================================
