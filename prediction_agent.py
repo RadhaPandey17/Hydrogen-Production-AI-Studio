@@ -4,35 +4,6 @@ Hydrogen Production AI Studio (2026)
 
 Prediction Agent
 
-Workflow
-
-Latitude
-Longitude
-
-↓
-
-Nearest Dataset Location
-
-↓
-
-Extract Remaining Features
-
-↓
-
-Feature Engineering
-
-↓
-
-Scaling
-
-↓
-
-Prediction
-
-↓
-
-Hydrogen Output
-CO₂ Emission
 ==========================================================
 """
 
@@ -40,9 +11,7 @@ import joblib
 import numpy as np
 import pandas as pd
 
-from pathlib import Path
-
-from config import * 
+from config import *
 
 
 class PredictionAgent:
@@ -64,9 +33,11 @@ class PredictionAgent:
         df = self.dataset.copy()
 
         distance = (
-            (df["Latitude"] - latitude) ** 2
-            +
+
+            (df["Latitude"] - latitude) ** 2 +
+
             (df["Longitude"] - longitude) ** 2
+
         )
 
         nearest_index = distance.idxmin()
@@ -82,10 +53,15 @@ class PredictionAgent:
         remove_cols = [
 
             "Paper_Citation",
+
             "Location",
+
             "Latitude",
+
             "Longitude",
+
             "Hydrogen_Output_kg_day",
+
             "Hydrogen_Output_log"
 
         ]
@@ -103,8 +79,11 @@ class PredictionAgent:
             df,
 
             columns=[
+
                 "Production_Pathway",
+
                 "Power_Source"
+
             ],
 
             drop_first=False
@@ -146,22 +125,45 @@ class PredictionAgent:
         )
 
         scaled = self.prepare_features(nearest)
-        prediction = self.model.predict(scaled)[0]
-        hydrogen = float(prediction)
 
-        co2 = nearest["LCA_GWP_kg_CO2_eq_per_kg_H2"]
+        prediction = float(self.model.predict(scaled)[0])
+
+        print("MODEL OUTPUT =", prediction)
+
+        # Prevent infinite values
+        if np.isnan(prediction):
+
+            hydrogen = 0.0
+
+        elif np.isinf(prediction):
+
+            hydrogen = 0.0
+
+        elif prediction > 10000:
+
+            hydrogen = prediction
+
+        elif prediction > 50:
+
+            hydrogen = prediction
+
+        else:
+
+            hydrogen = np.expm1(prediction)
+
+        co2 = float(nearest["LCA_GWP_kg_CO2_eq_per_kg_H2"])
 
         return {
 
             "Location": nearest["Location"],
 
-            "Latitude": nearest["Latitude"],
+            "Latitude": float(nearest["Latitude"]),
 
-            "Longitude": nearest["Longitude"],
+            "Longitude": float(nearest["Longitude"]),
 
             "Hydrogen_Output": round(float(hydrogen), 2),
 
-            "CO2_Emission": round(float(co2), 2),
+            "CO2_Emission": round(co2, 2),
 
             "Feature_Row": nearest,
 
